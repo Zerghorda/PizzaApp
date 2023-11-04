@@ -1,3 +1,3 @@
 # PizzAppFork
-## GUI: CsP
+## GUI: Tar Gergő
 Fork után a programozás közös feladat
