@@ -1,5 +1,8 @@
 package pizzapp;
 
+import java.util.Enumeration;
+import javax.swing.AbstractButton;
+
 public class PizzApp extends javax.swing.JFrame {
 
     public PizzApp() {
@@ -149,6 +152,11 @@ public class PizzApp extends javax.swing.JFrame {
         jScrollPane1.setViewportView(txaOsszesito);
 
         btnRendel.setText("Megrendelem");
+        btnRendel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRendelActionPerformed(evt);
+            }
+        });
 
         lblOsszesito.setText("Összestő:");
 
@@ -214,6 +222,18 @@ public class PizzApp extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnRendelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRendelActionPerformed
+       String extrak = extrak();
+       String meret = meret();
+       String pizza = (String) cmdValaszthatoPizzak.getSelectedItem();
+       int db = (int) numDb.getValue();
+       String format = String.format("A választott pizza: %s (%d)\nmérete: %s\nfeltételek:\n %s",pizza,db,meret,extrak);
+       txaOsszesito.setText(format);
+       int osszeg = szamolas();
+       String osszegSzov =Integer.toString(osszeg);
+       lblAr.setText(osszegSzov);
+    }//GEN-LAST:event_btnRendelActionPerformed
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -268,4 +288,70 @@ public class PizzApp extends javax.swing.JFrame {
     private javax.swing.JRadioButton rdbMeret32;
     private javax.swing.JTextArea txaOsszesito;
     // End of variables declaration//GEN-END:variables
+
+    private String extrak() {
+        Boolean[] feltetek = {chbHagyma.isSelected(), chbSajt.isSelected(), chbAnanasz.isSelected()};
+        String[] feltetekNeve = {"- hagyma\n ","- sajt\n ", "- ananász\n"};
+        String txt = "";
+        for (int i = 0; i < feltetek.length; i++) {
+            if (feltetek[i]) {
+                txt += feltetekNeve[i];
+            }
+        }
+        return txt;
+    }
+
+    private String meret() {
+              String txt = "";
+        for (Enumeration<AbstractButton> buttons = meretbtng.getElements(); buttons.hasMoreElements();) {
+            AbstractButton button = buttons.nextElement();
+            if (button.isSelected()) {
+                return button.getText();
+            }
+        }
+
+        return txt;
+    }
+
+    private int szamolas() {
+       Boolean[] feltetek = {chbHagyma.isSelected(), chbSajt.isSelected(), chbAnanasz.isSelected()};
+        int osszeg = 0;
+        int meret = 0;
+        boolean pizza1 = cmdValaszthatoPizzak.getSelectedIndex() == 1;
+        boolean pizza2 = cmdValaszthatoPizzak.getSelectedIndex() == 2;
+        boolean pizza3 = cmdValaszthatoPizzak.getSelectedIndex() == 3;
+        boolean pizza4 = cmdValaszthatoPizzak.getSelectedIndex() == 4;
+        int[] feltetekArak = {250, 300, 350};
+        int[] meretArak = {2145, 2650};
+        int[] pizzaArak = {1300, 1500, 2000 , 3500};
+        int db = (int) numDb.getValue();
+        if (meret().equals("25 cm")) {
+            meret = 0;
+            osszeg += meretArak[meret];
+        } else if (meret().equals("32 Cm")) {
+            meret = 1;
+            osszeg += meretArak[meret];
+        }
+        if (pizza1) {
+            osszeg += pizzaArak[0];
+        }
+        else if(pizza2){
+            osszeg += pizzaArak[1];
+        }
+        else if(pizza3){
+            osszeg += pizzaArak[2];
+        }
+        else if(pizza4){
+            osszeg += pizzaArak[3];
+        }
+        for (int i = 0; i < feltetek.length; i++) {
+            if (feltetek[i]) {
+                osszeg += feltetekArak[i];
+            }
+        }
+
+        osszeg = osszeg * db;
+        return osszeg;
+    }
+
 }
